@@ -15,8 +15,32 @@ if ('serviceWorker' in navigator) {
         .register('sw.js') //should be root level or higher level than cached assests
         .then(function(swRegistration){
 
-            alertify.warning('Service Worker: Registered');
+            var serviceWorker;
+
+            if(swRegistration.installing){
+                alertify.warning('ServiceWorker:  Resolved at Installing');
+                serviceWorker = swRegistration.installing;
+
+            }else if(swRegistration.waiting){
+                alertify.warning('ServiceWorker: Resolved at Waiting');
+                serviceWorker = swRegistration.waiting;
+
+            }else if(swRegistration.active){
+                alertify.success('ServiceWorker: Resolved at activated');
+                serviceWorker = swRegistration.active;
+            }
+
+            if(serviceWorker){
+
+                serviceWorker.addEventListener('statechange',function(e){
+
+                  alertify.warning('State change: ' + e.target.state);
+                })
+
+            }
+
             console.log(swRegistration);
+
 
 
         }).catch(function (err) {
