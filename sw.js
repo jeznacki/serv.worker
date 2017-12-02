@@ -2,7 +2,7 @@
 
 //jjtodo: define gulp detection file change (--private add to dev path Wp dev path)
 
-var siteCacheName = 'siteCacheNameV4'; //cache version - if modified cache will reload assets
+var siteCacheName = 'siteCacheNameV13'; //cache version - if modified cache will reload assets
 var siteCacheNamePages = 'siteCacheNamePagesV1'; //cache pages version - if modified cache will reload pages
 
 var siteCachedFiles = [
@@ -31,9 +31,8 @@ var siteCachedFiles = [
 //install event - when assets are cached
 self.addEventListener('install',function(ev){
 
-
     console.log('SWinside: Instal event',ev);
-
+    self.skipWaiting(); //for skip waiting - not waiting for tabs to be closed and update service worker + cache in background
     ev.waitUntil(
         caches.open(siteCacheName).then(function(cache) {
 
@@ -49,10 +48,13 @@ self.addEventListener('install',function(ev){
 self.addEventListener('activate',function(event){
     console.log('SWinside: Activate  event',event);
 
+   // self.clients.claim(); //for latest serwice worked activation without reload tab
+
     event.waitUntil(
         caches.keys().then(function(cachedKeys){
             var deletePromises= [];
-            for(var i=0; i< cachedKeys.lenght; ++i){
+            console.log(2);
+            for(var i=0; i< cachedKeys.length; ++i){
                 if(cachedKeys[i] != siteCacheName && cachedKeys[i] != siteCacheNamePages){
                     deletePromises.push(caches.delete(cachedKeys[i]));
                 }
