@@ -14,3 +14,25 @@ Service workers provide a way for webpages to run scripts in the background even
 * Second pageload
 * Shell is loaded from SW cache
 * Content loads off the network
+
+
+## Installation
+
+Install dependencies using npm:
+
+```sh
+$ npm install -g gulp && npm install
+```
+
+## Usage
+
+### Build
+
+```sh
+$ gulp
+```
+
+Once you've got a build of gulp done, server will start under
+```sh
+localhost:3000
+```
