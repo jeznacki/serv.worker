@@ -1,4 +1,4 @@
-# serwiceworker
+# Service Worker implementation with Cache API
 Service Worker implementation with Cache API - (Progressive Web App concept) using Materialize template as app shell.
 
 Service workers provide a way for webpages to run scripts in the background even when the page is not open. A service worker can act as a proxy to a web page, intercepting requests and controlling responses, and this makes them well suited to dealing with many exciting web features, such as offline capabilities, background syncing, and push notifications. Features like these have traditionally given native apps an edge over web apps, but with service workers, all kinds of previously impossible things are now possible on the web.
@@ -32,7 +32,7 @@ $ npm install -g gulp && npm install
 $ gulp
 ```
 
-Once you've got a build of gulp done, server will start under
+Once you've got a build of gulp done, server with browser-sync will start under
 ```sh
 localhost:3000
 ```
