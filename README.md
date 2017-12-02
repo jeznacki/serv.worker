@@ -37,7 +37,7 @@ Once you've got a build of gulp done, server with browser-sync will start under
 localhost:3000
 ```
 
-##You need HTTPS
+## You need HTTPS
 
 During development you'll be able to use service worker through localhost, but to deploy it on a site you'll need to have HTTPS setup on your server.
 
