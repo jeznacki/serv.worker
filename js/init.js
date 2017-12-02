@@ -15,7 +15,7 @@ if ('serviceWorker' in navigator) {
         .register('sw.js') //should be root level or higher level than cached assests
         .then(function(swRegistration){
 
-            //todo: remove this console log
+            alertify.success('Service Worker: Registered');
             console.log(swRegistration);
 
 
