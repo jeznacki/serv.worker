@@ -15,7 +15,7 @@ if ('serviceWorker' in navigator) {
         .register('sw.js') //should be root level or higher level than cached assests
         .then(function(swRegistration){
 
-            alertify.success('Service Worker: Registered');
+            alertify.warning('Service Worker: Registered');
             console.log(swRegistration);
 
 
