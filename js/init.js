@@ -18,14 +18,17 @@ if ('serviceWorker' in navigator) {
             var serviceWorker;
 
             if(swRegistration.installing){
+                console.log('ServiceWorker:  Resolved at Installing');
                 alertify.warning('ServiceWorker:  Resolved at Installing');
                 serviceWorker = swRegistration.installing;
 
             }else if(swRegistration.waiting){
+                console.log('ServiceWorker:  Resolved at Waiting');
                 alertify.warning('ServiceWorker: Resolved at Waiting');
                 serviceWorker = swRegistration.waiting;
 
             }else if(swRegistration.active){
+                console.log('ServiceWorker:  Resolved at activated');
                 alertify.success('ServiceWorker: Resolved at activated');
                 serviceWorker = swRegistration.active;
             }
@@ -34,6 +37,7 @@ if ('serviceWorker' in navigator) {
 
                 serviceWorker.addEventListener('statechange',function(e){
 
+                    console.log('State change: ' + e.target.state);
                   alertify.warning('State change: ' + e.target.state);
                 })
 

@@ -2,7 +2,8 @@
 
 //jjtodo: define gulp detection file change (--private add to dev path Wp dev path)
 
-var siteCacheName = 'siteCacheNameV1'; //cache version - if modified cache will reload assets
+var siteCacheName = 'siteCacheNameV4'; //cache version - if modified cache will reload assets
+var siteCacheNamePages = 'siteCacheNamePagesV1'; //cache pages version - if modified cache will reload pages
 
 var siteCachedFiles = [
 
@@ -31,15 +32,12 @@ var siteCachedFiles = [
 self.addEventListener('install',function(ev){
 
 
-   //jjtodo: jak dodac eventy np alertify docervice workera - post message?
-    console.log('Service Worker: Instal event',ev);
+    console.log('SWinside: Instal event',ev);
 
     ev.waitUntil(
         caches.open(siteCacheName).then(function(cache) {
 
-           console.log('Files cached');
-
-
+           console.log('SWinside:Files cached');
            return cache.addAll(siteCachedFiles)
         })
    );
@@ -48,11 +46,21 @@ self.addEventListener('install',function(ev){
 })
 
 //activate event - when cached assets are loaded
-self.addEventListener('activate',function(ev){
+self.addEventListener('activate',function(event){
+    console.log('SWinside: Activate  event',event);
 
-    //jjtodo: jak dodac eventy np alertify docervice workera - post message?
-    console.log('Service Worker: Activate  event',ev);
+    event.waitUntil(
+        caches.keys().then(function(cachedKeys){
+            var deletePromises= [];
+            for(var i=0; i< cachedKeys.lenght; ++i){
+                if(cachedKeys[i] != siteCacheName && cachedKeys[i] != siteCacheNamePages){
+                    deletePromises.push(caches.delete(cachedKeys[i]));
+                }
 
-    //jjtodo: cache referesh inmplementation needed
+            }
+
+            return Promise.all(deletePromises);
+        })
+    );
 
 });
