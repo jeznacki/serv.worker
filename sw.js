@@ -1,6 +1,9 @@
 'use strict';
 
+//jjtodo: define gulp detection file change (--private add to dev path Wp dev path)
+
 var siteCacheName = 'siteCacheNameV1'; //cache version - if modified cache will reload assets
+
 var siteCachedFiles = [
 
     'css/app-shell.css',  //CSS
@@ -38,4 +41,7 @@ self.addEventListener('install',function(ev){
 //activate event - when cached assets are loaded
 self.addEventListener('activate',function(ev){
     console.log('Service Worker: Activate  event',ev);
+
+    //jjtodo: cache referesh inmplementation needed
+
 });
