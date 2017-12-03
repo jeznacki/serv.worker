@@ -38,18 +38,28 @@ if ('serviceWorker' in navigator) {
                 serviceWorker.addEventListener('statechange',function(e){
 
                     console.log('State change: ' + e.target.state);
-                  alertify.warning('State change: ' + e.target.state);
+                   alertify.warning('State change: ' + e.target.state);
                 })
 
             }
 
-            console.log(swRegistration);
 
 
 
         }).catch(function (err) {
+
         console.log('Error occured', err);
-    })
+
+        })
+
+        //event fired when Immediate control method is used in Service Worker
+        //self.clients.claim();
+        //  or
+        //self.skipWaiting()
+
+        navigator.serviceWorker.addEventListener('controllerchange',function(e){
+           console.log('Controller Changed');
+        });
 
 
 
