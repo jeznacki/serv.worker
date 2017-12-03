@@ -2,7 +2,7 @@
 
 //jjtodo: define gulp detection file change (--private add to dev path Wp dev path)
 
-var siteCacheName = 'siteCacheNameV16'; //cache version - if modified cache will reload assets
+var siteCacheName = 'siteCacheNameV2'; //cache version - if modified cache will reload assets
 var siteCacheNamePages = 'siteCacheNamePagesV1'; //cache pages version - if modified cache will reload pages
 
 var siteCachedFiles = [
@@ -31,14 +31,14 @@ var siteCachedFiles = [
 //install event - when assets are cached
 self.addEventListener('install',function(ev){
 
-    console.log('SWinside: Instal event',ev);
+    console.log('SW--Core: Instal event',ev);
 
      //Immediate Control -  used to skip waiting state - when Service Worker controller change
     self.skipWaiting();
     ev.waitUntil(
         caches.open(siteCacheName).then(function(cache) {
 
-           console.log('SWinside:Files cached');
+           console.log('SW--Core:Files cached');
            return cache.addAll(siteCachedFiles)
         })
    );
@@ -48,7 +48,7 @@ self.addEventListener('install',function(ev){
 
 //activate event - when cached assets are loaded
 self.addEventListener('activate',function(event){
-    console.log('SWinside: Activate  event',event);
+    console.log('SW--Core: Activate  event',event);
 
     //Immediate Control - force service worker controller to activate if changed without tab reload
    self.clients.claim();

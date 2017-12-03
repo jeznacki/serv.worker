@@ -37,7 +37,7 @@ if ('serviceWorker' in navigator) {
 
                 serviceWorker.addEventListener('statechange',function(e){
 
-                    console.log('State change: ' + e.target.state);
+                    console.log('ServiceWorker state change: ' + e.target.state);
                    alertify.warning('State change: ' + e.target.state);
                 })
 
