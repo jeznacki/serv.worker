@@ -3,18 +3,16 @@
 //jjtodo: define gulp detection file change (--private add to dev path Wp dev path)
 
 //different caches can be usefull when having different strategies
-var siteCacheName = 'siteCacheNameV1'; //cache version - if modified cache will reload assets
+var siteCacheName = 'siteCacheNameV2'; //cache version - if modified cache will reload assets
 var siteCacheNamePages = 'siteCacheNamePagesV1';
 var siteCacheNameImages = 'siteCacheNameImagesV1';
 
-var exampleImagesPath = '/wp-content/uploads/';
 
 var siteCachedFiles = [
 
     '/css/app-shell.css',  //CSS
     '/css/alertify.css',  //CSS
     './',
-    '/about.html',
     '/fonts/roboto/Roboto-Bold.woff',   //FONTS
     '/fonts/roboto/Roboto-Bold.woff2',
     '/fonts/roboto/Roboto-Light.woff',
@@ -38,8 +36,9 @@ self.addEventListener('install',function(ev){
 
     console.log('SW--Core: Instal event',ev);
 
-     //Immediate Control -  used to skip waiting state - when Service Worker controller change
-    self.skipWaiting();
+    self.skipWaiting(); //Immediate Control -  used to skip waiting state - when Service Worker controller change
+
+    //pre caching manualy defined resources
     ev.waitUntil(
         caches.open(siteCacheName).then(function(cache) {
 
@@ -55,9 +54,9 @@ self.addEventListener('install',function(ev){
 self.addEventListener('activate',function(event){
     console.log('SW--Core: Activate  event',event);
 
-    //Immediate Control - force service worker controller to activate if changed without tab reload
-   self.clients.claim();
+    self.clients.claim();  //Immediate Control - force service worker controller to activate if changed without tab reload
 
+    //clearing caches if any cache name change
     event.waitUntil(
         caches.keys().then(function(cachedKeys){
             var deletePromises= [];
@@ -66,9 +65,7 @@ self.addEventListener('activate',function(event){
                 if(cachedKeys[i] != siteCacheName && cachedKeys[i] != siteCacheNamePages){
                     deletePromises.push(caches.delete(cachedKeys[i]));
                 }
-
             }
-
             return Promise.all(deletePromises);
         })
     );
@@ -82,29 +79,45 @@ self.addEventListener('fetch',function(event){
     var requestUrl = new URL(event.request.url); //convert request to URL object
     var requestPath = requestUrl.pathname;  //gets path (no domain, no params )- ex /css/app-shell.css
     var fileName = requestPath.substring(requestPath.lastIndexOf('/') + 1); // - ex app-shell.css
-    console.log(event);
-    console.log(requestPath);
-    console.log(fileName);
 
-    if(fileName == 'sw.js'){ //just pass request through - NETWORK ONLY STRATEGY, OFFLINE FAIL
+    var acceptHeader = event.request.headers.get('Accept');
+
+    console.log(event)
+    /*
+    console.log(event); //pure event
+    console.log(requestUrl); //url object
+   */
+
+    if(fileName == 'sw.js' || event.request.method =='POST'){
+        //POST requests can't be cached
+        //just pass request through - NETWORK ONLY STRATEGY (dtandard) - OFFLINE FAIL
         event.respondWith(fetch(event.request));
 
-        console.log(1111111111111111);
+    }else if(acceptHeader.indexOf('text/html') !== -1){  //if it is html file
+
+        networkFirstStrategy(event.request);
+
     }else {
-        fetchAndCacheRequst(event.request);
+        networkFirstStrategy(event.request);
     }
 
 });
 
+function networkFirstStrategy(request){
 
+    return fetchAndCacheRequst(request).catch(function(response){ //if network fail
+         return caches.match(request);  //then it show from cache
+    });
+
+}
 
 //caching request as key,value pair - in desired cache name
 function fetchAndCacheRequst(request){
 
     return fetch(request).then(function(networkResponse){
         caches.open(getCacheName(request)).then(function(cache){
-               cache.put(request,networkResponse);
-        })
+            cache.put(request,networkResponse);
+        });
 
         return networkResponse.clone();
     });
@@ -112,15 +125,17 @@ function fetchAndCacheRequst(request){
 }
 
 //cheking cache name in case of having few caches,
-// ( ex. if You have different strategies for images, another for content etc..)
+// ( ex. if You have different strategies for images, another for html etc..)
 
 function getCacheName(request){
-    var requestUrl = new URL(request.url); //convert request to URL object
-    var requestPath = requestUrl.pathname;  //gets path (no domain, no params )- ex /css/app-shell.css
 
-    if(exampleImagesPath ==  requestPath){
-        //if request is going from samle images location then cache it in images cache and return its name
-        return siteCacheNameImages
+    var requestUrl = new URL(request.url);
+    var requestPath = requestUrl.pathname;
+    var acceptHeader = request.headers.get('Accept');
+
+    if(acceptHeader.indexOf('text/html') !== -1){  //if it is html file
+
+       return siteCacheNamePages; //it use pages cache name
 
     }else {
         return siteCacheName;  //else use just default cache name = appshell
