@@ -3,10 +3,8 @@
 var debug = false; //debug flag -- see console
 
 //cache version - modify cacheName to reaload
-
-var siteAppShellCacheName = 'siteAppShellCacheNameV61';  //offline first strategy (LOAD FORM CACHE)
+var siteAppShellCacheName = 'siteAppShellCacheName3';  //offline first strategy (LOAD FORM CACHE)
 var siteCacheNameHtml = 'siteCacheNameHtmlV11'; //network first strategy
-var siteCacheNameVarious = 'siteCacheNameVariousV11'; //network first strategy
 
 var siteAppShellFiles = [
 
@@ -63,9 +61,7 @@ self.addEventListener('activate',function(event){
 
             for(var i=0; i< cachedKeys.length; ++i){
 
-                if(cachedKeys[i] != siteAppShellCacheName &&
-                    cachedKeys[i] != siteCacheNameHtml &&
-                    cachedKeys[i] != siteCacheNameVarious){
+                if(cachedKeys[i] != siteAppShellCacheName && cachedKeys[i] != siteCacheNameHtml){
                     deletePromises.push(caches.delete(cachedKeys[i]));
                 }
             }
@@ -81,35 +77,29 @@ self.addEventListener('fetch',function(event){
 
     var requestUrl = new URL(event.request.url); //convert request to URL object
     var requestPath = requestUrl.pathname;  //gets path (no domain, no params )- ex /css/app-shell.css
-    var fileName = requestPath.substring(requestPath.lastIndexOf('/') + 1); // - ex app-shell.css
 
     var acceptHeader = event.request.headers.get('Accept');
     var ajaxHeader = event.request.headers.get('x-requested-with');
+
 
     if(debug) {
         console.log(event); //pure event
         console.log(requestUrl); //url object
     }
 
-    if(fileName == 'sw.js' || event.request.method =='POST'){//POST requests can't be cached
+    if(inAppShell(requestPath)){
 
-        //just pass request through - NETWORK ONLY STRATEGY
-        event.respondWith(fetch(event.request));
+        //CACHE FIRST STRATEGY
+        event.respondWith(cacheFirstStrategy(event.request));
 
     }else if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){
 
         //if it is html file or ajax request - NETWORK FIRST STRATEGY
         event.respondWith(networkFirstStrategy(event.request));
 
-    }else if(inAppShell(requestPath)){
-
-        //CACHE FIRST STRATEGY - for app-shell files
-        event.respondWith(cacheFirstStrategy(event.request));
-
     }else {
-
-        // all the rest use - NETWORK FIRST STRATEGY
-        event.respondWith(networkFirstStrategy(event.request));
+        //other go NETWORK ONLY
+       event.respondWith(fetch(event.request));
     }
 
 });
@@ -119,7 +109,7 @@ self.addEventListener('fetch',function(event){
 function networkFirstStrategy(request){
 
     return fetchAndCacheRequst(request).catch(function(response){ //if network fail
-         return caches.match(request);  //then it show from cache
+        return caches.match(request);  //then it show from cache
     });
 
 }
@@ -132,9 +122,6 @@ function cacheFirstStrategy(request){
 }
 
 
-/* =================  HELPERS */
-
-//caching request as key,value pair - in desired cache name
 function fetchAndCacheRequst(request){
 
     return fetch(request).then(function(networkResponse){
@@ -147,8 +134,6 @@ function fetchAndCacheRequst(request){
     });
 }
 
-//cheking cache name in case of having few caches,
-// ( ex. if You have different strategies for images, another for html etc..)
 
 function getCacheName(request){
 
@@ -167,16 +152,14 @@ function getCacheName(request){
 
     }else if(inAppShell(requestPath)){
 
-       //if it is in pre cached assets
-       return  siteAppShellCacheName;
+        //if it is in pre cached assets
+        return  siteAppShellCacheName;
 
-    }else {
-
-        //else use various cache name
-        return siteCacheNameVarious;
     }
 
 }
+
+
 
 function inAppShell(requestPath){
 
