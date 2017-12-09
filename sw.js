@@ -2,28 +2,33 @@
 
 //jjtodo: define gulp detection file change (--private add to dev path Wp dev path)
 
-var siteCacheName = 'siteCacheNameV2'; //cache version - if modified cache will reload assets
-var siteCacheNamePages = 'siteCacheNamePagesV1'; //cache pages version - if modified cache will reload pages
+//different caches can be usefull when having different strategies
+var siteCacheName = 'siteCacheNameV1'; //cache version - if modified cache will reload assets
+var siteCacheNamePages = 'siteCacheNamePagesV1';
+var siteCacheNameImages = 'siteCacheNameImagesV1';
+
+var exampleImagesPath = '/wp-content/uploads/';
 
 var siteCachedFiles = [
 
-    'css/app-shell.css',  //CSS
-    'css/alertify.css',  //CSS
+    '/css/app-shell.css',  //CSS
+    '/css/alertify.css',  //CSS
     './',
-    'fonts/roboto/Roboto-Bold.woff',   //FONTS
-    'fonts/roboto/Roboto-Bold.woff2',
-    'fonts/roboto/Roboto-Light.woff',
-    'fonts/roboto/Roboto-Light.woff2',
-    'fonts/roboto/Roboto-Medium.woff',
-    'fonts/roboto/Roboto-Medium.woff2',
-    'fonts/roboto/Roboto-Regular.woff',
-    'fonts/roboto/Roboto-Regular.woff2',
-    'fonts/roboto/Roboto-Thin.woff',
-    'fonts/roboto/Roboto-Thin.woff2',
-    'js/init.js',  //JAVASCRIPT
-    'js/vendor/materialize.js',
-    'js/vendor/alettify.js',
-    'js/vendor/jquery-3.2.1.min.js',
+    '/about.html',
+    '/fonts/roboto/Roboto-Bold.woff',   //FONTS
+    '/fonts/roboto/Roboto-Bold.woff2',
+    '/fonts/roboto/Roboto-Light.woff',
+    '/fonts/roboto/Roboto-Light.woff2',
+    '/fonts/roboto/Roboto-Medium.woff',
+    '/fonts/roboto/Roboto-Medium.woff2',
+    '/fonts/roboto/Roboto-Regular.woff',
+    '/fonts/roboto/Roboto-Regular.woff2',
+    '/fonts/roboto/Roboto-Thin.woff',
+    '/fonts/roboto/Roboto-Thin.woff2',
+    '/js/init.js',  //JAVASCRIPT
+    '/js/vendor/materialize.js',
+    '/js/vendor/alettify.js',
+    '/js/vendor/jquery-3.2.1.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/alertify.js/0.5.0/alertify.min.js'
 
 ];
@@ -46,7 +51,7 @@ self.addEventListener('install',function(ev){
 
 })
 
-//activate event - when cached assets are loaded
+//activate event - when assets are loaded
 self.addEventListener('activate',function(event){
     console.log('SW--Core: Activate  event',event);
 
@@ -69,3 +74,55 @@ self.addEventListener('activate',function(event){
     );
 
 });
+
+
+//fetching requests Listener
+self.addEventListener('fetch',function(event){
+
+    var requestUrl = new URL(event.request.url); //convert request to URL object
+    var requestPath = requestUrl.pathname;  //gets path (no domain, no params )- ex /css/app-shell.css
+    var fileName = requestPath.substring(requestPath.lastIndexOf('/') + 1); // - ex app-shell.css
+    console.log(event);
+    console.log(requestPath);
+    console.log(fileName);
+
+    if(fileName == 'sw.js'){ //just pass request through - NETWORK ONLY STRATEGY, OFFLINE FAIL
+        event.respondWith(fetch(event.request));
+
+        console.log(1111111111111111);
+    }else {
+        fetchAndCacheRequst(event.request);
+    }
+
+});
+
+
+
+//caching request as key,value pair - in desired cache name
+function fetchAndCacheRequst(request){
+
+    return fetch(request).then(function(networkResponse){
+        caches.open(getCacheName(request)).then(function(cache){
+               cache.put(request,networkResponse);
+        })
+
+        return networkResponse.clone();
+    });
+
+}
+
+//cheking cache name in case of having few caches,
+// ( ex. if You have different strategies for images, another for content etc..)
+
+function getCacheName(request){
+    var requestUrl = new URL(request.url); //convert request to URL object
+    var requestPath = requestUrl.pathname;  //gets path (no domain, no params )- ex /css/app-shell.css
+
+    if(exampleImagesPath ==  requestPath){
+        //if request is going from samle images location then cache it in images cache and return its name
+        return siteCacheNameImages
+
+    }else {
+        return siteCacheName;  //else use just default cache name = appshell
+    }
+}
