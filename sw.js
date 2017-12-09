@@ -4,9 +4,10 @@ var debug = true; //debug flag -- see console
 
 //different caches for different strategies
 //cache version - if modified cacheName it will reload assets
-var siteCacheName = 'siteCacheNameV1';
-var siteCacheNameHtml = 'siteCacheNameHtmlV1';
 
+var siteCacheName = 'siteCacheNameV5';  //offline first strategy (LOAD FORM CACHE)
+var siteCacheNameHtml = 'siteCacheNameHtmlV1'; //network first strategy
+var siteCacheNameVarious = 'siteCacheNameVariousV1'; //network first strategy
 
 var siteCachedFiles = [
 
@@ -63,7 +64,10 @@ self.addEventListener('activate',function(event){
             var deletePromises= [];
 
             for(var i=0; i< cachedKeys.length; ++i){
-                if(cachedKeys[i] != siteCacheName && cachedKeys[i] != siteCacheNameHtml){
+
+                if(cachedKeys[i] != siteCacheName &&
+                    cachedKeys[i] != siteCacheNameHtml &&
+                    cachedKeys[i] != siteCacheNameVarious){
                     deletePromises.push(caches.delete(cachedKeys[i]));
                 }
             }
@@ -94,17 +98,28 @@ self.addEventListener('fetch',function(event){
         //just pass request through - NETWORK ONLY STRATEGY (dtandard) - OFFLINE FAIL
         event.respondWith(fetch(event.request));
 
-    }else if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){  //if it is html file or ajax request
+    }else if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){
 
+        //if it is html file or ajax request
         event.respondWith(networkFirstStrategy(event.request));
 
+    }else if(siteCachedFiles.indexOf(requestPath.slice(1,requestPath.length)) != -1 ){
+
+
+        // if is in siteCachedFiles array
+        //OFFLINE STRATEGY FIRST
+        event.respondWith(caches.match(event.request));
+
     }else {
+
+        // all the rest
         event.respondWith(networkFirstStrategy(event.request));
     }
 
 });
 
 function networkFirstStrategy(request){
+
 
     return fetchAndCacheRequst(request).catch(function(response){ //if network fail
          return caches.match(request);  //then it show from cache
@@ -115,6 +130,10 @@ function networkFirstStrategy(request){
 //caching request as key,value pair - in desired cache name
 function fetchAndCacheRequst(request){
 
+
+    console.log(getCacheName(request));
+
+
     return fetch(request).then(function(networkResponse){
 
         caches.open(getCacheName(request)).then(function(cache){
@@ -123,7 +142,6 @@ function fetchAndCacheRequst(request){
 
         return networkResponse.clone();
     });
-
 }
 
 //cheking cache name in case of having few caches,
@@ -131,18 +149,28 @@ function fetchAndCacheRequst(request){
 
 function getCacheName(request){
 
+
     var requestUrl = new URL(request.url);
+    var requestPath = requestUrl.pathname;
 
     var acceptHeader = request.headers.get('Accept');
     var ajaxHeader = request.headers.get('x-requested-with');
 
-    if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){  //if it is html file or ajax request
 
-        return siteCacheNameHtml; //it use pages cache name
+    if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest') {
+
+        //if it is html file or ajax request
+        return siteCacheNameHtml;
+
+    }else if(siteCachedFiles.indexOf(requestPath.slice(1,requestPath.length)) != -1 ){
+
+       //if it is in pre cached assets
+       return  siteCachedFiles;
 
     }else {
 
-        return siteCacheName;  //else use just default cache name = appshell
-
+        //else use various cache name
+        return siteCacheNameVarious;
     }
+
 }
