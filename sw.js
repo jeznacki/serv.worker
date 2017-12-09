@@ -1,6 +1,6 @@
 'use strict';
 
-var debug = false; //debug flag -- see console
+var debug = true; //debug flag -- see console
 
 //different caches for different strategies
 //cache version - if modified cacheName it will reload assets
@@ -36,16 +36,16 @@ self.addEventListener('install',function(ev){
 
     if(debug){ console.log('SW--Core: Instal event',ev); }
 
-    self.skipWaiting(); //Immediate Control -  used to skip waiting state - when Service Worker controller change
-
     //pre caching manualy defined files
     ev.waitUntil(
         caches.open(siteCacheName).then(function(cache) {
 
-            if(debug){('SW--Core:Files cached');}
-           return cache.addAll(siteCachedFiles)
+            if(debug){console.log('SW--Core:Files cached');}
+            return cache.addAll(siteCachedFiles)
         })
    );
+
+   self.skipWaiting(); //Immediate Control -  used to skip waiting state - when Service Worker controller change
 
 
 })
@@ -96,10 +96,10 @@ self.addEventListener('fetch',function(event){
 
     }else if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){  //if it is html file or ajax request
 
-        networkFirstStrategy(event.request);
+        event.respondWith(networkFirstStrategy(event.request));
 
     }else {
-        networkFirstStrategy(event.request);
+        event.respondWith(networkFirstStrategy(event.request));
     }
 
 });
