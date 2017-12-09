@@ -4,7 +4,10 @@
         $('.button-collapse').sideNav();
 
     }); // end of document ready
+
+
 })(jQuery); // end of jQuery name space
+
 
 
 /*  Service Worker init -  availability check and register */

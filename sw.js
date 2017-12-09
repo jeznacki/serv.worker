@@ -4,7 +4,7 @@
 
 //different caches can be usefull when having different strategies
 var siteCacheName = 'siteCacheNameV2'; //cache version - if modified cache will reload assets
-var siteCacheNamePages = 'siteCacheNamePagesV1';
+var siteCacheNameHtml = 'siteCacheNameHtmlV1';
 var siteCacheNameImages = 'siteCacheNameImagesV1';
 
 
@@ -38,7 +38,7 @@ self.addEventListener('install',function(ev){
 
     self.skipWaiting(); //Immediate Control -  used to skip waiting state - when Service Worker controller change
 
-    //pre caching manualy defined resources
+    //pre caching manualy defined files
     ev.waitUntil(
         caches.open(siteCacheName).then(function(cache) {
 
@@ -62,7 +62,7 @@ self.addEventListener('activate',function(event){
             var deletePromises= [];
 
             for(var i=0; i< cachedKeys.length; ++i){
-                if(cachedKeys[i] != siteCacheName && cachedKeys[i] != siteCacheNamePages){
+                if(cachedKeys[i] != siteCacheName && cachedKeys[i] != siteCacheNameHtml){
                     deletePromises.push(caches.delete(cachedKeys[i]));
                 }
             }
@@ -81,8 +81,8 @@ self.addEventListener('fetch',function(event){
     var fileName = requestPath.substring(requestPath.lastIndexOf('/') + 1); // - ex app-shell.css
 
     var acceptHeader = event.request.headers.get('Accept');
+    var ajaxHeader = event.request.headers.get('x-requested-with');
 
-    console.log(event)
     /*
     console.log(event); //pure event
     console.log(requestUrl); //url object
@@ -93,8 +93,9 @@ self.addEventListener('fetch',function(event){
         //just pass request through - NETWORK ONLY STRATEGY (dtandard) - OFFLINE FAIL
         event.respondWith(fetch(event.request));
 
-    }else if(acceptHeader.indexOf('text/html') !== -1){  //if it is html file
+    }else if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){  //if it is html file or ajax request
 
+        console.log(222);
         networkFirstStrategy(event.request);
 
     }else {
@@ -115,6 +116,7 @@ function networkFirstStrategy(request){
 function fetchAndCacheRequst(request){
 
     return fetch(request).then(function(networkResponse){
+
         caches.open(getCacheName(request)).then(function(cache){
             cache.put(request,networkResponse);
         });
@@ -130,14 +132,17 @@ function fetchAndCacheRequst(request){
 function getCacheName(request){
 
     var requestUrl = new URL(request.url);
-    var requestPath = requestUrl.pathname;
+
     var acceptHeader = request.headers.get('Accept');
+    var ajaxHeader = request.headers.get('x-requested-with');
 
-    if(acceptHeader.indexOf('text/html') !== -1){  //if it is html file
+    if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){  //if it is html file or ajax request
 
-       return siteCacheNamePages; //it use pages cache name
+        return siteCacheNameHtml; //it use pages cache name
 
     }else {
+
         return siteCacheName;  //else use just default cache name = appshell
+
     }
 }
