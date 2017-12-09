@@ -10,23 +10,23 @@ var siteCacheNameHtml = 'siteCacheNameHtmlV1';
 
 var siteCachedFiles = [
 
-    '/css/app-shell.css',  //CSS
-    '/css/alertify.css',  //CSS
+    'css/app-shell.css',  //CSS
+    'css/alertify.css',  //CSS
     './',
-    '/fonts/roboto/Roboto-Bold.woff',   //FONTS
-    '/fonts/roboto/Roboto-Bold.woff2',
-    '/fonts/roboto/Roboto-Light.woff',
-    '/fonts/roboto/Roboto-Light.woff2',
-    '/fonts/roboto/Roboto-Medium.woff',
-    '/fonts/roboto/Roboto-Medium.woff2',
-    '/fonts/roboto/Roboto-Regular.woff',
-    '/fonts/roboto/Roboto-Regular.woff2',
-    '/fonts/roboto/Roboto-Thin.woff',
-    '/fonts/roboto/Roboto-Thin.woff2',
-    '/js/init.js',  //JAVASCRIPT
-    '/js/vendor/materialize.js',
-    '/js/vendor/alettify.js',
-    '/js/vendor/jquery-3.2.1.min.js',
+    'fonts/roboto/Roboto-Bold.woff',   //FONTS
+    'fonts/roboto/Roboto-Bold.woff2',
+    'fonts/roboto/Roboto-Light.woff',
+    'fonts/roboto/Roboto-Light.woff2',
+    'fonts/roboto/Roboto-Medium.woff',
+    'fonts/roboto/Roboto-Medium.woff2',
+    'fonts/roboto/Roboto-Regular.woff',
+    'fonts/roboto/Roboto-Regular.woff2',
+    'fonts/roboto/Roboto-Thin.woff',
+    'fonts/roboto/Roboto-Thin.woff2',
+    'js/init.js',  //JAVASCRIPT
+    'js/vendor/materialize.js',
+    'js/vendor/alettify.js',
+    'js/vendor/jquery-3.2.1.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/alertify.js/0.5.0/alertify.min.js'
 
 ];
