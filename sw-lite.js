@@ -3,7 +3,7 @@
 var debug = false; //debug flag -- see console
 
 //cache version - modify cacheName to reaload
-var siteAppShellCacheName = 'siteAppShellCacheName3';  //offline first strategy (LOAD FORM CACHE)
+var siteAppShellCacheName = 'siteAppShellCacheName1';  //offline first strategy (LOAD FORM CACHE)
 var siteCacheNameHtml = 'siteCacheNameHtmlV11'; //network first strategy
 
 var siteAppShellFiles = [
