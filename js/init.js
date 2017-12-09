@@ -1,3 +1,5 @@
+var debug = false;
+
 (function($){
     $(function(){
 
@@ -21,27 +23,34 @@ if ('serviceWorker' in navigator) {
             var serviceWorker;
 
             if(swRegistration.installing){
-                console.log('ServiceWorker:  Resolved at Installing');
-                alertify.warning('ServiceWorker:  Resolved at Installing');
+                if(debug) {
+                    console.log('ServiceWorker:  Resolved at Installing');
+                    alertify.warning('ServiceWorker:  Resolved at Installing');
+                }
                 serviceWorker = swRegistration.installing;
 
             }else if(swRegistration.waiting){
-                console.log('ServiceWorker:  Resolved at Waiting');
-                alertify.warning('ServiceWorker: Resolved at Waiting');
+                if(debug) {
+                    console.log('ServiceWorker:  Resolved at Waiting');
+                    alertify.warning('ServiceWorker: Resolved at Waiting');
+                }
                 serviceWorker = swRegistration.waiting;
 
             }else if(swRegistration.active){
-                console.log('ServiceWorker:  Resolved at activated');
-                alertify.success('ServiceWorker: Resolved at activated');
+                if(debug) {
+                    console.log('ServiceWorker:  Resolved at activated');
+                    alertify.success('ServiceWorker: Resolved at activated');
+                }
                 serviceWorker = swRegistration.active;
             }
 
             if(serviceWorker){
 
                 serviceWorker.addEventListener('statechange',function(e){
-
-                    console.log('ServiceWorker state change: ' + e.target.state);
-                   alertify.warning('State change: ' + e.target.state);
+                    if(debug) {
+                        console.log('ServiceWorker state change: ' + e.target.state);
+                        alertify.warning('State change: ' + e.target.state);
+                    }
                 })
 
             }
@@ -50,18 +59,14 @@ if ('serviceWorker' in navigator) {
 
 
         }).catch(function (err) {
+             console.log('Error occured', err);
+        });
 
-        console.log('Error occured', err);
+        //event fired when Service Worker controller change - sw.js
 
-        })
-
-        //event fired when Immediate control method is used in Service Worker
-        //self.clients.claim();
-        //  or
-        //self.skipWaiting()
 
         navigator.serviceWorker.addEventListener('controllerchange',function(e){
-           console.log('Controller Changed');
+            if(debug){ console.log('Controller Changed');}
         });
 
 

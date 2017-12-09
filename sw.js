@@ -1,11 +1,11 @@
 'use strict';
 
-//jjtodo: define gulp detection file change (--private add to dev path Wp dev path)
+var debug = false; //debug flag -- see console
 
-//different caches can be usefull when having different strategies
-var siteCacheName = 'siteCacheNameV2'; //cache version - if modified cache will reload assets
+//different caches for different strategies
+//cache version - if modified cacheName it will reload assets
+var siteCacheName = 'siteCacheNameV1';
 var siteCacheNameHtml = 'siteCacheNameHtmlV1';
-var siteCacheNameImages = 'siteCacheNameImagesV1';
 
 
 var siteCachedFiles = [
@@ -31,10 +31,10 @@ var siteCachedFiles = [
 
 ];
 
-//install event - when assets are cached
+//install event - when assets are pre cached
 self.addEventListener('install',function(ev){
 
-    console.log('SW--Core: Instal event',ev);
+    if(debug){ console.log('SW--Core: Instal event',ev); }
 
     self.skipWaiting(); //Immediate Control -  used to skip waiting state - when Service Worker controller change
 
@@ -42,7 +42,7 @@ self.addEventListener('install',function(ev){
     ev.waitUntil(
         caches.open(siteCacheName).then(function(cache) {
 
-           console.log('SW--Core:Files cached');
+            if(debug){('SW--Core:Files cached');}
            return cache.addAll(siteCachedFiles)
         })
    );
@@ -52,7 +52,8 @@ self.addEventListener('install',function(ev){
 
 //activate event - when assets are loaded
 self.addEventListener('activate',function(event){
-    console.log('SW--Core: Activate  event',event);
+
+    if(debug){ console.log('SW--Core: Activate  event',event); }
 
     self.clients.claim();  //Immediate Control - force service worker controller to activate if changed without tab reload
 
@@ -83,10 +84,10 @@ self.addEventListener('fetch',function(event){
     var acceptHeader = event.request.headers.get('Accept');
     var ajaxHeader = event.request.headers.get('x-requested-with');
 
-    /*
-    console.log(event); //pure event
-    console.log(requestUrl); //url object
-   */
+    if(debug) {
+        console.log(event); //pure event
+        console.log(requestUrl); //url object
+    }
 
     if(fileName == 'sw.js' || event.request.method =='POST'){
         //POST requests can't be cached
@@ -95,7 +96,6 @@ self.addEventListener('fetch',function(event){
 
     }else if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){  //if it is html file or ajax request
 
-        console.log(222);
         networkFirstStrategy(event.request);
 
     }else {
