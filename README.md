@@ -5,8 +5,8 @@ Service workers provide a way for webpages to run scripts in the background even
 
 ## Achieved goals
 
-* Super fast app-shell rendering
-* Any viewed contents work offline
+* Blazing fast app-shell rendering and page load (after first visit)
+* Any viewed content work offline
 
 App shell files are pre cached and use OFFLINE FIRST - then network strategy
 HTML content and AJAX HTML requests and any other resources
