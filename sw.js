@@ -76,6 +76,7 @@ self.addEventListener('activate',function(event){
 });
 
 
+
 self.addEventListener('fetch',function(event){
 
     var requestUrl = new URL(event.request.url); //convert request to URL object
@@ -125,7 +126,7 @@ function networkFirstStrategy(request){
 
 function cacheFirstStrategy(request){
 
-    return catches.match(request).then(function(cacheResponse){
+    return caches.match(request).then(function(cacheResponse){
         return cacheResponse || fetchAndCacheRequst(request);
     });
 
