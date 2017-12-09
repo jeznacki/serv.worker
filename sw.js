@@ -1,19 +1,17 @@
 'use strict';
 
-var debug = true; //debug flag -- see console
+var debug = false; //debug flag -- see console
 
-//different caches for different strategies
-//cache version - if modified cacheName it will reload assets
+//cache version - modify cacheName to reaload
 
-var siteAppShellCacheName = 'siteAppShellCacheNameV6';  //offline first strategy (LOAD FORM CACHE)
-var siteCacheNameHtml = 'siteCacheNameHtmlV1'; //network first strategy
-var siteCacheNameVarious = 'siteCacheNameVariousV1'; //network first strategy
+var siteAppShellCacheName = 'siteAppShellCacheNameV61';  //offline first strategy (LOAD FORM CACHE)
+var siteCacheNameHtml = 'siteCacheNameHtmlV11'; //network first strategy
+var siteCacheNameVarious = 'siteCacheNameVariousV11'; //network first strategy
 
 var siteAppShellFiles = [
 
     'css/app-shell.css',  //CSS
     'css/alertify.css',  //CSS
-    './',
     'fonts/roboto/Roboto-Bold.woff',   //FONTS
     'fonts/roboto/Roboto-Bold.woff2',
     'fonts/roboto/Roboto-Light.woff',
@@ -46,7 +44,7 @@ self.addEventListener('install',function(ev){
         })
    );
 
-   self.skipWaiting(); //Immediate Control -  used to skip waiting state - when Service Worker controller change
+   self.skipWaiting(); //Immediate Control -  used to skip waiting state
 
 
 })
@@ -78,7 +76,6 @@ self.addEventListener('activate',function(event){
 });
 
 
-//fetching requests Listener
 self.addEventListener('fetch',function(event){
 
     var requestUrl = new URL(event.request.url); //convert request to URL object
@@ -93,40 +90,49 @@ self.addEventListener('fetch',function(event){
         console.log(requestUrl); //url object
     }
 
-    if(fileName == 'sw.js' || event.request.method =='POST'){
-        //POST requests can't be cached
-        //just pass request through - NETWORK ONLY STRATEGY (dtandard) - OFFLINE FAIL
+    if(fileName == 'sw.js' || event.request.method =='POST'){//POST requests can't be cached
+
+        //just pass request through - NETWORK ONLY STRATEGY
         event.respondWith(fetch(event.request));
 
     }else if(acceptHeader.indexOf('text/html') !== -1 || ajaxHeader == 'XMLHttpRequest'){
 
-        //if it is html file or ajax request
+        //if it is html file or ajax request - NETWORK FIRST STRATEGY
         event.respondWith(networkFirstStrategy(event.request));
 
     }else if(inAppShell(requestPath)){
 
-
-        // if is in siteAppShellFiles array
-        //OFFLINE STRATEGY FIRST
-        //todo: offline first then network
-        event.respondWith(caches.match(event.request));
+        //CACHE FIRST STRATEGY - for app-shell files
+        event.respondWith(cacheFirstStrategy(event.request));
 
     }else {
 
-        // all the rest
+        // all the rest use - NETWORK FIRST STRATEGY
         event.respondWith(networkFirstStrategy(event.request));
     }
 
 });
 
-function networkFirstStrategy(request){
+/* =================  CACHEING  STRATEGIES */
 
+function networkFirstStrategy(request){
 
     return fetchAndCacheRequst(request).catch(function(response){ //if network fail
          return caches.match(request);  //then it show from cache
     });
 
 }
+
+function cacheFirstStrategy(request){
+
+    return catches.match(request).then(function(cacheResponse){
+        return cacheResponse || fetchAndCacheRequst(request);
+    });
+
+}
+
+
+/* =================  HELPERS */
 
 //caching request as key,value pair - in desired cache name
 function fetchAndCacheRequst(request){
