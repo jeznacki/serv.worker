@@ -12,6 +12,7 @@ var debug = false;
 
 
 
+
 /*  Service Worker init -  availability check and register */
 if ('serviceWorker' in navigator) {
 
@@ -72,3 +73,14 @@ if ('serviceWorker' in navigator) {
 
 
 }
+
+/*
+SERVICE WORKERS UNREGISTER EXAMPLE
+navigator.serviceWorker.getRegistrations().then(function(registrations) {
+
+ for(let registration of registrations) {
+  registration.unregister()
+	}
+ }
+)
+*/
