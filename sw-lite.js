@@ -52,7 +52,7 @@ self.addEventListener('activate',function(event){
 
     if(debug){ console.log('SW--Core: Activate  event',event); }
 
-    self.clients.claim();  //Immediate Control - force service worker controller to activate if changed without tab reload
+    event.waitUntil(clients.claim());  //Immediate Control - force service worker controller to activate if changed without tab reload
 
     //clearing caches if any cache name change
     event.waitUntil(

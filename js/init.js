@@ -70,9 +70,9 @@ if ('serviceWorker' in navigator) {
             if(debug){ console.log('Controller Changed');}
         });
 
-
-
 }
+
+
 
 /*SERVICE WORKERS UNREGISTER EXAMPLE */
 
@@ -84,4 +84,11 @@ function serviceWorkersUregister() {
             }
         }
     )
+}
+function allCachesClean(){
+    window.caches.keys().then(function(cacheNames) {
+        cacheNames.forEach(function(cacheName) {
+            window.caches.delete(cacheName);
+        });
+    });
 }

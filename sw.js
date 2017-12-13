@@ -4,9 +4,9 @@ var debug = false; //debug flag -- see console
 
 //cache version - modify cacheName to reaload
 
-var siteAppShellCacheName = 'siteAppShellCacheNameV61';  //offline first strategy (LOAD FORM CACHE)
-var siteCacheNameHtml = 'siteCacheNameHtmlV11'; //network first strategy
-var siteCacheNameVarious = 'siteCacheNameVariousV11'; //network first strategy
+var siteAppShellCacheName = 'siteAppShellCacheNameV3333361';  //offline first strategy (LOAD FORM CACHE)
+var siteCacheNameHtml = 'siteCacheNameHtmlV1333331'; //network first strategy
+var siteCacheNameVarious = 'siteCacheNameVariousV33333'; //network first strategy
 
 var siteAppShellFiles = [
 
@@ -27,10 +27,9 @@ var siteAppShellFiles = [
     'js/vendor/alettify.js',
     'js/vendor/jquery-3.2.1.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/alertify.js/0.5.0/alertify.min.js'
-
 ];
 
-//install event - when assets are pre cached
+//install event - when assets are pre cachedh ghd fghd fh df
 self.addEventListener('install',function(ev){
 
     if(debug){ console.log('SW--Core: Instal event',ev); }
@@ -41,10 +40,14 @@ self.addEventListener('install',function(ev){
 
             if(debug){console.log('SW--Core:Files cached');}
             return cache.addAll(siteAppShellFiles)
+        }).then(function(){
+
+            return  self.skipWaiting(); //Immediate Control -  used to skip waiting state
+
         })
    );
 
-   self.skipWaiting(); //Immediate Control -  used to skip waiting state
+
 
 
 })
@@ -52,9 +55,7 @@ self.addEventListener('install',function(ev){
 //activate event - when assets are loaded
 self.addEventListener('activate',function(event){
 
-    if(debug){ console.log('SW--Core: Activate  event',event); }
-
-    self.clients.claim();  //Immediate Control - force service worker controller to activate if changed without tab reload
+    if(debug){ console.log('SW--Core: Activate  event',event); }//Immediate Control - force service worker controller to activate if changed without tab reload
 
     //clearing caches if any cache name change
     event.waitUntil(
@@ -72,6 +73,8 @@ self.addEventListener('activate',function(event){
             return Promise.all(deletePromises);
         })
     );
+
+    return self.clients.claim();
 
 });
 
@@ -91,7 +94,7 @@ self.addEventListener('fetch',function(event){
         console.log(requestUrl); //url object
     }
 
-    if(fileName == 'sw.js' || event.request.method =='POST'){//POST requests can't be cached
+    if(fileName == 'sw.js' || event.request.method =='POST' || fileName == 'index.html'){//POST requests can't be cached
 
         //just pass request through - NETWORK ONLY STRATEGY
         event.respondWith(fetch(event.request));
