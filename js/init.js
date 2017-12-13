@@ -74,13 +74,14 @@ if ('serviceWorker' in navigator) {
 
 }
 
-/*
-SERVICE WORKERS UNREGISTER EXAMPLE
-navigator.serviceWorker.getRegistrations().then(function(registrations) {
+/*SERVICE WORKERS UNREGISTER EXAMPLE */
 
- for(let registration of registrations) {
-  registration.unregister()
-	}
- }
-)
-*/
+function serviceWorkersUregister() {
+    navigator.serviceWorker.getRegistrations().then(function (registrations) {
+
+            for (let registration of registrations) {
+                registration.unregister()
+            }
+        }
+    )
+}
