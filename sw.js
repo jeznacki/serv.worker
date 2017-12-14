@@ -4,12 +4,12 @@ var debug = false; //debug flag -- see console
 
 //cache version - modify cacheName to reaload
 
-var siteAppShellCacheName = 'siteAppShellCacheNameV3333361';  //offline first strategy (LOAD FORM CACHE)
-var siteCacheNameHtml = 'siteCacheNameHtmlV1333331'; //network first strategy
-var siteCacheNameVarious = 'siteCacheNameVariousV33333'; //network first strategy
+var siteAppShellCacheName = 'siteAppShellCacheNameV555';  //offline first strategy (LOAD FORM CACHE)
+var siteCacheNameHtml = 'siteCacheNameHtmlV555'; //network first strategy
+var siteCacheNameVarious = 'siteCacheNameVarious555'; //network first strategy
+
 
 var siteAppShellFiles = [
-
     'css/app-shell.css',  //CSS
     'css/alertify.css',  //CSS
     'fonts/roboto/Roboto-Bold.woff',   //FONTS

@@ -45,8 +45,20 @@ https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerf
 
 ## Manifest.json
 
-Generated with Web App manifest generator
+Generated with Web App manifest generator to make web app installable.
 https://app-manifest.firebaseapp.com/
 
 Full specification
 https://www.w3.org/TR/appmanifest/
+
+
+## .htaccess
+Contain, max age=0 rule to prevent browser from cacheing service worker file
+
+It is important to set Cache-Control header with low max-age time like max-age=0
+otherwise sw.js (service-worker) will be cached by browser native cache.
+In result it will not update instantly his contents and neither the cache.
+
+<filesMatch "\.(js)$">
+      Header set Cache-Control "max-age=0, public"
+</filesMatch>

@@ -1,0 +1,8 @@
+<IfModule mod_headers.c>
+Header set Connection keep-alive
+
+    <filesMatch "\.(js)$">
+        Header set Cache-Control "max-age=0, public"
+    </filesMatch>
+
+</IfModule>
