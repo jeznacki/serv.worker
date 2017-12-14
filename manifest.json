@@ -3,7 +3,7 @@
   "short_name": "SWCAPI",
   "theme_color": "#2196f3",
   "background_color": "#2a72ac",
-  "display": "browser",
+  "display": "standalone",
   "orientation": "portrait",
   "start_url": "index.html",
   "icons": [
