@@ -4,9 +4,9 @@ var debug = false; //debug flag -- see console
 
 //cache version - modify cacheName to reaload
 
-var siteAppShellCacheName = 'siteAppShellCacheNameV555';  //offline first strategy (LOAD FORM CACHE)
-var siteCacheNameHtml = 'siteCacheNameHtmlV555'; //network first strategy
-var siteCacheNameVarious = 'siteCacheNameVarious555'; //network first strategy
+var siteAppShellCacheName = 'siteAppShellCacheNameV222';  //offline first strategy (LOAD FORM CACHE)
+var siteCacheNameHtml = 'siteCacheNameHtmlV55226'; //network first strategy
+var siteCacheNameVarious = 'siteCacheNameVarious55226'; //network first strategy
 
 
 var siteAppShellFiles = [
@@ -22,7 +22,6 @@ var siteAppShellFiles = [
     'fonts/roboto/Roboto-Regular.woff2',
     'fonts/roboto/Roboto-Thin.woff',
     'fonts/roboto/Roboto-Thin.woff2',
-    'js/init.js',  //JAVASCRIPT
     'js/vendor/materialize.js',
     'js/vendor/alettify.js',
     'js/vendor/jquery-3.2.1.min.js',
